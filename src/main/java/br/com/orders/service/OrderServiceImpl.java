@@ -39,7 +39,7 @@ public class OrderServiceImpl implements OrderService {
         log.info("Iniciando persistencia do pedido na base. Pedido={}", order);
 
         final BigDecimal totalPrice = order.getItems().stream()
-                .map(x -> x.getPrice().multiply(BigDecimal.valueOf(x.getAmount())))
+                .map(x -> x.getPrice().multiply(BigDecimal.valueOf(x.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         order.setTotalPrice(totalPrice);
@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
 
         OrdersByClientEntity response = new OrdersByClientEntity();
         response.setClientId(clientId);
-        response.setOrdersAmount(orders.size());
+        response.setOrderQuantity(orders.size());
 
         return mapper.mapFrom(response);
     }

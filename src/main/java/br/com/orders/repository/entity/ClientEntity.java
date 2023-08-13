@@ -14,7 +14,4 @@ public class ClientEntity {
 
     @Id
     private int id;
-
-    private int ordersAmount;
-
 }
