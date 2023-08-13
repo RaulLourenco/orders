@@ -17,7 +17,7 @@ public class ClientServiceImpl implements ClientService {
     private ClientMapper mapper;
 
     @Override
-    public Client persistClient(Client client) {
+    public Client persistClient(final Client client) {
         ClientEntity clientEntity = clientRepository.save(mapper.mapFrom(client));
         return mapper.mapFrom(clientEntity);
     }

@@ -2,6 +2,7 @@ package br.com.orders.mapper;
 
 import br.com.orders.domain.Client;
 import br.com.orders.domain.Order;
+import br.com.orders.dto.TotalQuantityByClientResponse;
 import br.com.orders.repository.entity.ClientEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -15,4 +16,7 @@ public interface ClientMapper {
 
     @Mapping(target = "id", source = "clientCode")
     Client mapFrom(Order order);
+
+    @Mapping(target = "clientId", source = "id")
+    TotalQuantityByClientResponse mapToResponse(Client source);
 }

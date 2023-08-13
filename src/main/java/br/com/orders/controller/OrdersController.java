@@ -2,8 +2,6 @@ package br.com.orders.controller;
 
 import br.com.orders.domain.Client;
 import br.com.orders.domain.Order;
-import br.com.orders.domain.OrderListByClient;
-import br.com.orders.domain.OrdersByClient;
 import br.com.orders.dto.OrderListByClientResponse;
 import br.com.orders.dto.TotalQuantityByClientResponse;
 import br.com.orders.dto.TotalValueResponse;
@@ -53,7 +51,7 @@ public class OrdersController {
     }
 
     @GetMapping("/total_value/{orderId}")
-    public ResponseEntity<TotalValueResponse> getTotalValue(@PathVariable int orderId) {
+    public ResponseEntity<TotalValueResponse> getTotalValue(@PathVariable final int orderId) {
         log.info("Buscando pedido na base de dados. ID do Pedido={}", orderId);
 
         Order order = orderService.findById(orderId);
@@ -66,12 +64,12 @@ public class OrdersController {
     }
 
     @GetMapping("/total_quantity/{clientId}")
-    public ResponseEntity<TotalQuantityByClientResponse> getTotalQuantity(@PathVariable int clientId) {
+    public ResponseEntity<TotalQuantityByClientResponse> getTotalQuantity(@PathVariable final int clientId) {
         log.info("Buscando quantidade de pedidos por cliente. ID do Cliente={}", clientId);
 
-        OrdersByClient orderQuantityByClient = orderService.findOrderQuantityByClient(clientId);
+        Client orderQuantityByClient = orderService.findOrderQuantityByClient(clientId);
 
-        TotalQuantityByClientResponse response = orderMapper.mapFrom(orderQuantityByClient);
+        TotalQuantityByClientResponse response = clientMapper.mapToResponse(orderQuantityByClient);
 
         log.info("Response de quantidade total retornado com sucesso. Response={}", response);
 
@@ -79,15 +77,24 @@ public class OrdersController {
     }
 
     @GetMapping("/orders/{clientId}")
-    public ResponseEntity<OrderListByClientResponse> getOrdersList(@PathVariable int clientId) {
+    public ResponseEntity<OrderListByClientResponse> getOrdersList(@PathVariable final int clientId) {
         log.info("Buscando lista de pedidos por cliente. ID do Cliente={}", clientId);
 
-        OrderListByClient allOrdersByClient = orderService.findAllOrdersByClient(clientId);
+        List<Order> allOrdersByClient = orderService.findAllOrdersByClient(clientId);
 
-        OrderListByClientResponse response = orderMapper.mapFrom(allOrdersByClient);
+        OrderListByClientResponse response = getResponse(allOrdersByClient);
 
         log.info("Response de lista de pedidos retornado com sucesso. Response={}", response);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    private OrderListByClientResponse getResponse(final List<Order> list) {
+        OrderListByClientResponse response = new OrderListByClientResponse();
+        if(!list.isEmpty()) {
+            response.setClientId(list.stream().findFirst().get().getClientCode());
+            response.setOrders(orderMapper.mapToResponse(list));
+        }
+        return response;
     }
 }
