@@ -69,9 +69,9 @@ public class OrdersController {
     public ResponseEntity<TotalQuantityByClientResponse> getTotalQuantity(@PathVariable int clientId) {
         log.info("Buscando quantidade de pedidos por cliente. ID do Cliente={}", clientId);
 
-        OrdersByClient allOrdersByClient = orderService.findOrderQuantityByClient(clientId);
+        OrdersByClient orderQuantityByClient = orderService.findOrderQuantityByClient(clientId);
 
-        TotalQuantityByClientResponse response = orderMapper.mapFrom(allOrdersByClient);
+        TotalQuantityByClientResponse response = orderMapper.mapFrom(orderQuantityByClient);
 
         log.info("Response de quantidade total retornado com sucesso. Response={}", response);
 
