@@ -1,10 +1,13 @@
 package br.com.orders.service;
 
 import br.com.orders.domain.Order;
+import br.com.orders.domain.OrderItems;
+import br.com.orders.domain.OrderListByClient;
 import br.com.orders.domain.OrdersByClient;
 import br.com.orders.mapper.OrderMapper;
 import br.com.orders.repository.OrderRepository;
 import br.com.orders.repository.entity.OrderEntity;
+import br.com.orders.repository.entity.OrderListByClientEntity;
 import br.com.orders.repository.entity.OrdersByClientEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +16,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -51,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrdersByClient findAllOrdersByClient(final Integer clientId) {
+    public OrdersByClient findOrderQuantityByClient(final Integer clientId) {
         log.info("Iniciando busca da quantidade de pedidos por cliente.");
 
         List<OrderEntity> orders = orderRepository.findAllOrdersByClient(clientId, PageRequest.of(0,15));
@@ -61,6 +66,24 @@ public class OrderServiceImpl implements OrderService {
         OrdersByClientEntity response = new OrdersByClientEntity();
         response.setClientId(clientId);
         response.setOrderQuantity(orders.size());
+
+        return mapper.mapFrom(response);
+    }
+
+    @Override
+    public OrderListByClient findAllOrdersByClient(Integer clientId) {
+        log.info("Iniciando busca da lista de pedidos por cliente.");
+
+        List<OrderEntity> orders = orderRepository.findAllOrdersByClient(clientId, PageRequest.of(0,15));
+
+        log.info("Busca realizada com sucesso.");
+
+        OrderListByClientEntity response = new OrderListByClientEntity();
+        response.setClientId(clientId);
+        response.setItems(orders.stream()
+                .map(OrderEntity::getItems)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList()));
 
         return mapper.mapFrom(response);
     }

@@ -2,7 +2,9 @@ package br.com.orders.controller;
 
 import br.com.orders.domain.Client;
 import br.com.orders.domain.Order;
+import br.com.orders.domain.OrderListByClient;
 import br.com.orders.domain.OrdersByClient;
+import br.com.orders.dto.OrderListByClientResponse;
 import br.com.orders.dto.TotalQuantityByClientResponse;
 import br.com.orders.dto.TotalValueResponse;
 import br.com.orders.mapper.ClientMapper;
@@ -15,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/order")
@@ -65,11 +69,24 @@ public class OrdersController {
     public ResponseEntity<TotalQuantityByClientResponse> getTotalQuantity(@PathVariable int clientId) {
         log.info("Buscando quantidade de pedidos por cliente. ID do Cliente={}", clientId);
 
-        OrdersByClient allOrdersByClient = orderService.findAllOrdersByClient(clientId);
+        OrdersByClient allOrdersByClient = orderService.findOrderQuantityByClient(clientId);
 
         TotalQuantityByClientResponse response = orderMapper.mapFrom(allOrdersByClient);
 
         log.info("Response de quantidade total retornado com sucesso. Response={}", response);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/orders/{clientId}")
+    public ResponseEntity<OrderListByClientResponse> getOrdersList(@PathVariable int clientId) {
+        log.info("Buscando lista de pedidos por cliente. ID do Cliente={}", clientId);
+
+        OrderListByClient allOrdersByClient = orderService.findAllOrdersByClient(clientId);
+
+        OrderListByClientResponse response = orderMapper.mapFrom(allOrdersByClient);
+
+        log.info("Response de lista de pedidos retornado com sucesso. Response={}", response);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
