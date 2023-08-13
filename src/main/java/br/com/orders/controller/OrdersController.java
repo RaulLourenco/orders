@@ -3,8 +3,10 @@ package br.com.orders.controller;
 import br.com.orders.domain.Client;
 import br.com.orders.domain.Order;
 import br.com.orders.domain.OrdersByClient;
-import br.com.orders.dto.TotalAmountByClientResponse;
+import br.com.orders.dto.TotalQuantityByClientResponse;
 import br.com.orders.dto.TotalValueResponse;
+import br.com.orders.mapper.ClientMapper;
+import br.com.orders.mapper.OrderMapper;
 import br.com.orders.service.ClientService;
 import br.com.orders.service.OrderService;
 import org.slf4j.Logger;
@@ -24,14 +26,19 @@ public class OrdersController {
     @Autowired
     private ClientService clientService;
 
+    @Autowired
+    private OrderMapper orderMapper;
+
+    @Autowired
+    private ClientMapper clientMapper;
+
     private static Logger log = LoggerFactory.getLogger(OrdersController.class);
 
     @PostMapping("/saveOrder")
     public Order saveOrder(@RequestBody Order order) {
         log.info("Criando pedido na base de dados. Pedido={}", order);
 
-        Client client = new Client();
-        client.setId(order.getClientCode());
+        Client client = clientMapper.mapFrom(order);
         clientService.persistClient(client);
 
         Order persisted = orderService.persistOrder(order);
@@ -47,24 +54,20 @@ public class OrdersController {
 
         Order order = orderService.findById(orderId);
 
-        TotalValueResponse response = new TotalValueResponse();
-        response.setOrderId(order.getId());
-        response.setTotalPrice(order.getTotalPrice());
+        TotalValueResponse response = orderMapper.mapFromOrder(order);
 
         log.info("Response de valor total retornado com sucesso. Response={}", response);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @GetMapping("/total_amount/{clientId}")
-    public ResponseEntity<TotalAmountByClientResponse> getTotalAmount(@PathVariable int clientId) {
+    @GetMapping("/total_quantity/{clientId}")
+    public ResponseEntity<TotalQuantityByClientResponse> getTotalQuantity(@PathVariable int clientId) {
         log.info("Buscando quantidade de pedidos por cliente. ID do Cliente={}", clientId);
 
         OrdersByClient allOrdersByClient = orderService.findAllOrdersByClient(clientId);
 
-        TotalAmountByClientResponse response = new TotalAmountByClientResponse();
-        response.setClientId(allOrdersByClient.getClientId());
-        response.setOrdersAmount(allOrdersByClient.getOrdersAmount());
+        TotalQuantityByClientResponse response = orderMapper.mapFrom(allOrdersByClient);
 
         log.info("Response de quantidade total retornado com sucesso. Response={}", response);
 

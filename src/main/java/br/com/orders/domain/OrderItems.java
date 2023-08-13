@@ -13,7 +13,7 @@ public class OrderItems {
 
     private String product;
 
-    private int amount;
+    private int quantity;
 
     private BigDecimal price;
 }

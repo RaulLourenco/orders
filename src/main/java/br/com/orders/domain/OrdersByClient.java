@@ -11,5 +11,5 @@ public class OrdersByClient {
 
     private int clientId;
 
-    private int ordersAmount;
+    private int orderQuantity;
 }
