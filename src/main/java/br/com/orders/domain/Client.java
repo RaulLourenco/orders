@@ -10,4 +10,6 @@ import lombok.*;
 public class Client {
 
     private int id;
+
+    private int orderQuantity;
 }

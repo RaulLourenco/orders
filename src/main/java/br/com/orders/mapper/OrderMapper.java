@@ -1,16 +1,13 @@
 package br.com.orders.mapper;
 
 import br.com.orders.domain.Order;
-import br.com.orders.domain.OrderListByClient;
-import br.com.orders.domain.OrdersByClient;
-import br.com.orders.dto.OrderListByClientResponse;
-import br.com.orders.dto.TotalQuantityByClientResponse;
+import br.com.orders.dto.OrderDto;
 import br.com.orders.dto.TotalValueResponse;
 import br.com.orders.repository.entity.OrderEntity;
-import br.com.orders.repository.entity.OrderListByClientEntity;
-import br.com.orders.repository.entity.OrdersByClientEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+
+import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
@@ -19,14 +16,8 @@ public interface OrderMapper {
 
     OrderEntity mapFrom(Order source);
 
-    OrdersByClient mapFrom(OrdersByClientEntity source);
-
-    TotalQuantityByClientResponse mapFrom(OrdersByClient source);
-
     @Mapping(target = "orderId", source = "id")
     TotalValueResponse mapFromOrder(Order source);
 
-    OrderListByClient mapFrom(OrderListByClientEntity source);
-
-    OrderListByClientResponse mapFrom(OrderListByClient source);
+    List<OrderDto> mapToResponse(List<Order> source);
 }
