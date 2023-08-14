@@ -9,8 +9,6 @@ import java.util.List;
 @Data
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class Order {
 
     private int id;
