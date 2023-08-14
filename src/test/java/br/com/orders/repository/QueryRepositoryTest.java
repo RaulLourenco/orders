@@ -18,7 +18,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 @DisplayName("Teste do Query Repository")
