@@ -1,5 +1,7 @@
 package br.com.orders.service;
 
+import br.com.orders.application.Constantes;
+import br.com.orders.application.exceptions.OrderNotFoundException;
 import br.com.orders.domain.Client;
 import br.com.orders.domain.Order;
 import br.com.orders.mapper.OrderMapper;
@@ -29,9 +31,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order findById(final Integer orderId) {
-        Optional<OrderEntity> order = orderRepository.findById(orderId);
+        Optional<OrderEntity> orderEntity = orderRepository.findById(orderId);
 
-        return order.map(orderEntity -> mapper.mapFrom(orderEntity)).orElse(null);
+        if(orderEntity.isEmpty()) {
+            throw new OrderNotFoundException(String.format("%s: %s", Constantes.ORDER_NOT_FOUND_MESSAGE, orderId));
+        }
+
+        return mapper.mapFrom(orderEntity.get());
     }
 
     @Override
@@ -54,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
     public Client findOrderQuantityByClient(final Integer clientId) {
         log.info("Iniciando busca da quantidade de pedidos por cliente.");
 
-        List<OrderEntity> orders = orderRepository.findAllOrdersByClient(clientId, PageRequest.of(0,15));
+        List<OrderEntity> orders = getOrderEntityList(clientId);
 
         log.info("Busca realizada com sucesso.");
 
@@ -69,7 +75,7 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> findAllOrdersByClient(final Integer clientId) {
         log.info("Iniciando busca da lista de pedidos por cliente.");
 
-        List<OrderEntity> orders = orderRepository.findAllOrdersByClient(clientId, PageRequest.of(0,15));
+        List<OrderEntity> orders = getOrderEntityList(clientId);
 
         log.info("Busca realizada com sucesso.");
 
@@ -77,5 +83,13 @@ public class OrderServiceImpl implements OrderService {
         orders.forEach(order -> list.add(mapper.mapFrom(order)));
 
         return list;
+    }
+
+    private List<OrderEntity> getOrderEntityList(final Integer clientId) {
+        List<OrderEntity> orders = orderRepository.findAllOrdersByClient(clientId, PageRequest.of(0,15));
+        if(orders.isEmpty()) {
+            throw new OrderNotFoundException(String.format("%s: %s", Constantes.ORDER_LIST_NOT_FOUND_MESSAGE, clientId));
+        }
+        return orders;
     }
 }
