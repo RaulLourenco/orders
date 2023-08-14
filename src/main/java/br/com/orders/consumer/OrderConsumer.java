@@ -29,21 +29,30 @@ public class OrderConsumer {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private static Logger log = LoggerFactory.getLogger(OrderConsumer.class);
+    private static final Logger log = LoggerFactory.getLogger(OrderConsumer.class);
 
     @RabbitListener(queues = {"${queue.name}"})
     public void receive(@Payload final String message) {
         log.info("Criando pedido na base de dados. Pedido={}", message);
         try {
             final Order order = objectMapper.readValue(message, Order.class);
-            final Client client = clientMapper.mapFrom(order);
-            clientService.persistClient(client);
 
-            final Order persisted = orderService.persistOrder(order);
+            createClient(order);
 
-            log.info("Pedido persistido na base de dados. Pedido={}", persisted);
+            final Order orderCreated = createOrder(order);
+
+            log.info("Pedido persistido na base de dados. Pedido={}", orderCreated);
         } catch(final JsonProcessingException ex) {
             log.error("Erro ao converter mensagem para pedido");
         }
+    }
+
+    private void createClient(final Order order) {
+        final Client client = clientMapper.mapFrom(order);
+        clientService.persistClient(client);
+    }
+
+    private Order createOrder(final Order order) {
+        return orderService.persistOrder(order);
     }
 }

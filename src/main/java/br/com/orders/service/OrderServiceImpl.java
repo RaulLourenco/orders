@@ -27,11 +27,11 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderMapper mapper;
 
-    private static Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     @Override
     public Order findById(final Integer orderId) {
-        Optional<OrderEntity> orderEntity = orderRepository.findById(orderId);
+        final Optional<OrderEntity> orderEntity = orderRepository.findById(orderId);
 
         if(orderEntity.isEmpty()) {
             throw new OrderNotFoundException(String.format("%s: %s", Constantes.ORDER_NOT_FOUND_MESSAGE, orderId));
@@ -49,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         order.setTotalPrice(totalPrice);
-        OrderEntity orderEntity = orderRepository.save(mapper.mapFrom(order));
+        final OrderEntity orderEntity = orderRepository.save(mapper.mapFrom(order));
 
         log.info("Persistencia do pedido feito com sucesso! Pedido={}", orderEntity);
 
@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
     public Client findOrderQuantityByClient(final Integer clientId) {
         log.info("Iniciando busca da quantidade de pedidos por cliente.");
 
-        List<OrderEntity> orders = getOrderEntityList(clientId);
+        final List<OrderEntity> orders = getOrderEntityList(clientId);
 
         log.info("Busca realizada com sucesso.");
 
@@ -75,7 +75,7 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> findAllOrdersByClient(final Integer clientId) {
         log.info("Iniciando busca da lista de pedidos por cliente.");
 
-        List<OrderEntity> orders = getOrderEntityList(clientId);
+        final List<OrderEntity> orders = getOrderEntityList(clientId);
 
         log.info("Busca realizada com sucesso.");
 
@@ -86,7 +86,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private List<OrderEntity> getOrderEntityList(final Integer clientId) {
-        List<OrderEntity> orders = orderRepository.findAllOrdersByClient(clientId, PageRequest.of(0,15));
+        final List<OrderEntity> orders = orderRepository.findAllOrdersByClient(clientId, PageRequest.of(0,15));
         if(orders.isEmpty()) {
             throw new OrderNotFoundException(String.format("%s: %s", Constantes.ORDER_LIST_NOT_FOUND_MESSAGE, clientId));
         }
