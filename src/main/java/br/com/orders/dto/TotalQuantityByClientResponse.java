@@ -6,8 +6,6 @@ import lombok.*;
 @Getter
 @Setter
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class TotalQuantityByClientResponse {
 
     @JsonProperty("codigo_cliente")

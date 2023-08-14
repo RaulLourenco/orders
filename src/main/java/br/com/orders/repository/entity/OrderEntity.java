@@ -12,8 +12,6 @@ import java.util.List;
 @Data
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Document(collection = "Orders")
 public class OrderEntity {
 

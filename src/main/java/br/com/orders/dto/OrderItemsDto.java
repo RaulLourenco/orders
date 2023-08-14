@@ -8,8 +8,6 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class OrderItemsDto {
 
     @JsonProperty("produto")

@@ -7,8 +7,6 @@ import java.math.BigDecimal;
 @Getter
 @Setter
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class OrderItems {
 
     private String product;

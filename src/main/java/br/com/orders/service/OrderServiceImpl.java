@@ -31,11 +31,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order findById(final Integer orderId) {
+        log.info("Iniciando busca de pedido na base. ID: {}", orderId);
+
         final Optional<OrderEntity> orderEntity = orderRepository.findById(orderId);
 
         if(orderEntity.isEmpty()) {
             throw new OrderNotFoundException(String.format("%s: %s", Constantes.ORDER_NOT_FOUND_MESSAGE, orderId));
         }
+
+        log.info("Busca realizada com sucesso.");
 
         return mapper.mapFrom(orderEntity.get());
     }
@@ -58,7 +62,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Client findOrderQuantityByClient(final Integer clientId) {
-        log.info("Iniciando busca da quantidade de pedidos por cliente.");
+        log.info("Iniciando busca da quantidade de pedidos por cliente. ID: {}", clientId);
 
         final List<OrderEntity> orders = getOrderEntityList(clientId);
 
@@ -73,7 +77,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> findAllOrdersByClient(final Integer clientId) {
-        log.info("Iniciando busca da lista de pedidos por cliente.");
+        log.info("Iniciando busca da lista de pedidos por cliente. ID: {}", clientId);
 
         final List<OrderEntity> orders = getOrderEntityList(clientId);
 
