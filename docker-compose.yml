@@ -23,6 +23,7 @@ services:
       - 5672:5672
   orders-app:
     build: .
+    image: raulourenco/orders-app
     container_name: orders
     environment:
       - RABBITMQ_DEFAULT_USER=user
