@@ -1,0 +1,16 @@
+server:
+  port: 8080
+spring:
+  rabbitmq:
+    host: host.docker.internal
+    port: 5672
+    username: ${RABBITMQ_DEFAULT_USER:user}
+    password: ${RABBITMQ_DEFAULT_PASS:password}
+  data:
+    mongodb:
+      host: host.docker.internal
+      port: 27017
+      database: OrdersDB
+
+queue:
+  name: order
