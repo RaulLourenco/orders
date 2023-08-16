@@ -2,6 +2,7 @@ package br.com.orders.consumer;
 
 import br.com.orders.domain.Client;
 import br.com.orders.domain.Order;
+import br.com.orders.domain.OrderItems;
 import br.com.orders.mapper.ClientMapper;
 import br.com.orders.service.ClientService;
 import br.com.orders.service.OrderService;
@@ -13,6 +14,12 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import java.util.List;
+import java.util.Set;
 
 @Component
 public class OrderConsumer {
@@ -29,6 +36,9 @@ public class OrderConsumer {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private Validator validator;
+
     private static final Logger log = LoggerFactory.getLogger(OrderConsumer.class);
 
     @RabbitListener(queues = {"${queue.name}"})
@@ -37,13 +47,19 @@ public class OrderConsumer {
         try {
             final Order order = objectMapper.readValue(message, Order.class);
 
+            validate(order);
+
             createClient(order);
 
             final Order orderCreated = createOrder(order);
 
             log.info("Pedido persistido na base de dados. Pedido={}", orderCreated);
-        } catch(final JsonProcessingException ex) {
-            log.error("Erro ao converter mensagem para pedido");
+        } catch(final Throwable ex) {
+            if(ex instanceof JsonProcessingException) {
+                log.error("Erro ao converter mensagem para pedido.");
+            } else {
+                log.error("Erro ao validar/processar pedido.");
+            }
         }
     }
 
@@ -54,5 +70,22 @@ public class OrderConsumer {
 
     private Order createOrder(final Order order) {
         return orderService.persistOrder(order);
+    }
+
+    private void validate(final Order order) {
+        final Set<ConstraintViolation<Order>> violations = validator.validate(order);
+        validateList(order.getItems());
+        if(!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
+    }
+
+    private void validateList(final List<OrderItems> items) {
+        for(OrderItems item: items) {
+            final Set<ConstraintViolation<OrderItems>> itemViolations = validator.validate(item);
+            if(!itemViolations.isEmpty()) {
+                throw new ConstraintViolationException(itemViolations);
+            }
+        }
     }
 }

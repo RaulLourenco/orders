@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.validation.Validator;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -41,6 +42,9 @@ class OrderConsumerTest {
 
     @Mock
     private ObjectMapper objectMapper;
+
+    @Mock
+    private Validator validator;
 
     private Order order;
 
@@ -75,6 +79,7 @@ class OrderConsumerTest {
         consumer.receive(orderString);
 
         verify(objectMapper, atLeastOnce()).readValue(eq(orderString), eq(Order.class));
+        verify(validator, atLeastOnce()).validate(eq(order));
         verify(clientMapper, atLeastOnce()).mapFrom(eq(order));
         verify(clientService, atLeastOnce()).persistClient(eq(client));
         verify(orderService, atLeastOnce()).persistOrder(eq(order));
@@ -89,6 +94,7 @@ class OrderConsumerTest {
         consumer.receive(emptyOrder);
 
         verify(objectMapper, atLeastOnce()).readValue(eq(emptyOrder), eq(Order.class));
+        verify(validator, never()).validate(eq(order));
         verify(clientMapper, never()).mapFrom(eq(order));
         verify(clientService, never()).persistClient(eq(client));
         verify(orderService, never()).persistOrder(eq(order));

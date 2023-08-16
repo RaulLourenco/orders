@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class ClientServiceImpl implements ClientService {
 
@@ -24,9 +26,14 @@ public class ClientServiceImpl implements ClientService {
     public Client persistClient(final Client client) {
         log.info("Iniciando persistencia de cliente na base. Cliente={}", client);
 
-        final ClientEntity clientEntity = clientRepository.save(mapper.mapFrom(client));
+        final Optional<ClientEntity> entityOptional = clientRepository.findById(client.getId());
 
-        log.info("Persistencia de cliente feito com sucesso! Cliente={}", clientEntity);
+        ClientEntity clientEntity = entityOptional.orElseGet(ClientEntity::new);
+
+        if(entityOptional.isEmpty()) {
+            clientEntity = clientRepository.save(mapper.mapFrom(client));
+            log.info("Persistencia de cliente feita com sucesso! Cliente={}", clientEntity);
+        }
 
         return mapper.mapFrom(clientEntity);
     }
