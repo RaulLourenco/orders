@@ -48,14 +48,20 @@ public class OrderServiceImpl implements OrderService {
     public Order persistOrder(final Order order) {
         log.info("Iniciando persistencia do pedido na base. Pedido={}", order);
 
+        final Optional<OrderEntity> entityOptional = orderRepository.findById(order.getId());
+
+        OrderEntity orderEntity = entityOptional.orElseGet(OrderEntity::new);
+
         final BigDecimal totalPrice = order.getItems().stream()
                 .map(x -> x.getPrice().multiply(BigDecimal.valueOf(x.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         order.setTotalPrice(totalPrice);
-        final OrderEntity orderEntity = orderRepository.save(mapper.mapFrom(order));
 
-        log.info("Persistencia do pedido feito com sucesso! Pedido={}", orderEntity);
+        if(entityOptional.isEmpty()) {
+            orderEntity = orderRepository.save(mapper.mapFrom(order));
+            log.info("Persistencia do pedido feita com sucesso! Pedido={}", orderEntity);
+        }
 
         return mapper.mapFrom(orderEntity);
     }
