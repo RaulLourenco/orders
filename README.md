@@ -3,38 +3,38 @@
 ### Para executar o projeto na máquina, é necessário ter os seguintes programas instalados:
 
 ```
-* Docker Desktop
-* Git
-* Postman
+1. Docker Desktop
+2. Git
+3. Postman
 ```
 
 ### Com os programas instalados, agora é só seguir o passo a passo:
 
-1. Faça o clone deste repositório
+1. Faça o clone deste repositório:
 
 `git clone https://github.com/RaulLourenco/orders.git`
 
-2. Abra a raiz do projeto pelo terminal (GitBash, CMD/Powershell, etc) e identifique o arquivo **`docker-compose.yml`**
+2. Abra a raiz do projeto pelo terminal (GitBash, CMD/Powershell, etc) e identifique o arquivo **`docker-compose.yml`**.
 
 ![Raiz do projeto](./images/print-ls.png)
 
-3. Execute o comando a seguir para iniciar os containers
+3. Execute o comando a seguir para iniciar os containers:
 
 `docker-compose up`
 
-4. Aguarde o comando terminar de subir os containers. Quando aparecer a mensagem de conexão com RabbitMQ quer dizer que já podemos testar a app
+4. Aguarde o comando terminar de subir os containers. Quando aparecer a mensagem de conexão com RabbitMQ quer dizer que já podemos testar a app.
 
 ![Mensagem de conexão com o RabbitMQ](./images/rabbitmq-connection.png)
 
-5. Agora iremos acessar a Central de Gerenciamento do RabbitMQ. Abra o seu navegador e digite **http://localhost:15672/**, assim que estiver na tela de Login, digite o _Username_ **`user`** e o _Password_ **`password`** para logar na Central
+5. Agora iremos acessar a Central de Gerenciamento do RabbitMQ. Abra o seu navegador e digite **http://localhost:15672/**, assim que estiver na tela de Login, digite o _Username_ **`user`** e o _Password_ **`password`** para logar na Central.
 
 ![Tela de Login RabbitMQ](./images/rabbitmq-login-screen.png)
 
-6. Estamos logados na Central! Para gerarmos uma mensagem, navegue até a aba **Queues and Streams**
+6. Estamos logados na Central! Para gerarmos uma mensagem, navegue até a aba **Queues and Streams**.
 
 ![Aba de Queues RabbitMQ](./images/rabbitmq-tabs.png)
 
-7. A fila que utilizaremos já estará criada para que possamos produzir uma mensagem. Clique no nome da fila **_order_**
+7. A fila que utilizaremos já estará criada para que possamos produzir uma mensagem. Clique no nome da fila **_order_**.
 
 ![Nome da fila RabbitMQ](./images/rabbitmq-queue.png)
 
@@ -42,7 +42,7 @@
 
 ![Página da fila RabbitMQ](./images/rabbitmq-queue-page.png)
 
-9. Para produzir uma mensagem, basta abrir a aba de _Publish message_ e colocar o Payload (JSON) de requisição e clicar no botão _Publish message_
+9. Para produzir uma mensagem, basta abrir a aba de _Publish message_ e colocar o Payload (JSON) de requisição e clicar no botão _Publish message_.
 
 ```JSON
 {
