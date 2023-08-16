@@ -1,0 +1,73 @@
+{
+	"info": {
+		"_postman_id": "4d5e0710-46e8-4098-acd3-81c161d2960e",
+		"name": "Pedidos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7640617"
+	},
+	"item": [
+		{
+			"name": "Valor Total do Pedido",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/order/total_value/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"order",
+						"total_value",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Quantidade Total de Pedidos por Client",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/order/total_quantity/102",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"order",
+						"total_quantity",
+						"102"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lista de Pedidos por Cliente",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/order/orders/102",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"order",
+						"orders",
+						"102"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
